@@ -1,6 +1,7 @@
-FROM eclipse-temurin:17-jdk-alpine as build
+FROM eclipse-temurin:17-jre-alpine as build
 WORKDIR .
-
+RUN addgroup -S dev01 && adduser -S dev01 -G dev01
+USER dev01
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
