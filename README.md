@@ -356,6 +356,17 @@ ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.demo.UploadingApplication"
 
 
 
+--------
+--------
+--------
+
+# Rust
+
+https://github.com/tokio-rs/axum
+
+https://github.com/tokio-rs/axum/blob/main/ECOSYSTEM.md
+
+https://rust-on-nails.com/
 
 
 
