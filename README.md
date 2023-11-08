@@ -362,11 +362,47 @@ ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.demo.UploadingApplication"
 
 # Rust
 
+<https://www.rust-lang.org/>
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+```sh
+echo "export PATH=$PATH:~/.cargo/bin" >> ~/.zshrc && . ~/.zshrc
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ cargo --version
+cargo 1.73.0 (9c4383fb5 2023-08-26)
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust]
+└─$ cargo new simple01  
+     Created binary (application) `simple01` package
+
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple01]
+└─$ cargo run         
+Hello, world!	 
+
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple01]
+└─$ cargo test
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+
+
+
+
 https://github.com/tokio-rs/axum
 
 https://github.com/tokio-rs/axum/blob/main/ECOSYSTEM.md
 
 https://rust-on-nails.com/
+
+
 
 
 
