@@ -354,6 +354,7 @@ USER kali
 ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.demo.UploadingApplication"]
 ```
 
+TODO: Create the web project, REST, with Dockerfile for deployment.. ( into kubernetes over gitops )
 
 
 --------
@@ -393,6 +394,93 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ```
 
 
+https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html
+
+- Ownership in Rust
+  - Each value in Rust has an owner.
+  - There can only be one owner at a time.
+  - When the owner goes out of scope, the value will be dropped.
+
+  - Slice
+```rust
+    let s = String::from("hello world");
+    let hello = &s[0..5];    // portion of the string
+    let world = &s[6..11];   // portion of the string
+```
+
+Chapter 6 - enum  https://doc.rust-lang.org/book/ch06-00-enums.html
+enums Message
+
+```rust
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+impl Message {
+    fn call(&self) {
+        // method body would be defined here
+    }
+}
+let m = Message::Write(String::from("hello"));
+m.call();
+```
+
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+```
+
+
+Chapter 6 Pattern Matching :: https://doc.rust-lang.org/book/ch06-02-match.html
+
+
+```rust
+    fn plus_one(x: Option<i32>) -> Option<i32> {
+        match x {
+            None => None,
+            Some(i) => Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+```
+
+```rust
+
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+```
+
+Chapter 7 : packages and crates : https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html
+
+
+
+```sh
+cargo new messages
+
+cd messages
+
+cargo run  
+```
+
+```
+src/main.rs
+src/lib.rs
+src/bin
+```
 
 
 
