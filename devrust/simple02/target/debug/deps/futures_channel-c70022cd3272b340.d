@@ -1,0 +1,11 @@
+/home/kali/projects/weekly66/devrust/simple02/target/debug/deps/futures_channel-c70022cd3272b340.rmeta: /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lib.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lock.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/mod.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/queue.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/oneshot.rs
+
+/home/kali/projects/weekly66/devrust/simple02/target/debug/deps/libfutures_channel-c70022cd3272b340.rlib: /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lib.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lock.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/mod.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/queue.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/oneshot.rs
+
+/home/kali/projects/weekly66/devrust/simple02/target/debug/deps/futures_channel-c70022cd3272b340.d: /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lib.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lock.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/mod.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/queue.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/oneshot.rs
+
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lib.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/lock.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/mod.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/mpsc/queue.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-channel-0.3.29/src/oneshot.rs:

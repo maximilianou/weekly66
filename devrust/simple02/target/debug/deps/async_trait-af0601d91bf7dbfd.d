@@ -1,0 +1,12 @@
+/home/kali/projects/weekly66/devrust/simple02/target/debug/deps/libasync_trait-af0601d91bf7dbfd.so: /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lib.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/args.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/bound.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/expand.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lifetime.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/parse.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/receiver.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/verbatim.rs
+
+/home/kali/projects/weekly66/devrust/simple02/target/debug/deps/async_trait-af0601d91bf7dbfd.d: /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lib.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/args.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/bound.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/expand.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lifetime.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/parse.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/receiver.rs /home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/verbatim.rs
+
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lib.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/args.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/bound.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/expand.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/lifetime.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/parse.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/receiver.rs:
+/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/async-trait-0.1.74/src/verbatim.rs:

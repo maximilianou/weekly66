@@ -887,6 +887,60 @@ mod tests {
 ```
 
 
+```sh
+# run test in parallel default
+cargo test 
+
+# run test in serie
+cargo test -- --test-threads=1
+
+cargo test -- --show-output
+```
+
+
+- web server, axum framework
+
+<https://docs.rs/axum/latest/axum/>
+
+
+main.rs
+```rust
+use axum::{
+    routing::get,
+    Router,
+};
+
+#[tokio::main]
+async fn main() {
+    // build our application with a single route
+    let app = Router::new().route("/", get(|| async { "Hello, World!" }));
+
+    // run it with hyper on localhost:3000
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+```
+
+Cargo.toml
+```
+[package]
+name = "simple02"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum  =  "0.6"
+hyper = { version = "1.0.0-rc.4", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
+tower = { version = "0.4", features = ["full"] }
+```
+
+
 
 TODO: TDD
 TODO: upload files
