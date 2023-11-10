@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 axum  =  "0.6"
 hyper = { version = "1.0.0-rc.4", features = ["full"] }
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["full", "macros", "rt-multi-thread"] }
 tower = { version = "0.4", features = ["full"] }

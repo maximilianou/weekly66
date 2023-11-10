@@ -940,6 +940,82 @@ tokio = { version = "1", features = ["full"] }
 tower = { version = "0.4", features = ["full"] }
 ```
 
+https://docs.rs/axum/latest/axum/
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple02]
+└─$ cargo add tokio --features macros,rt-multi-thread
+    Updating crates.io index
+      Adding tokio v1 to dependencies.
+             Features as of v1.0.1:
+             + bytes
+             + fs
+             + full
+             + io-std
+             + io-util
+             + libc
+             + macros
+             + memchr
+             + net
+             + num_cpus
+             + once_cell
+             + parking_lot
+             + process
+             + rt
+             + rt-multi-thread
+             + signal
+             + signal-hook-registry
+             + sync
+             + time
+             + tokio-macros
+             - mio
+             - test-util
+             - tracing
+             - winapi
+```
+
+Cargo.toml
+```
+[dependencies]
+tokio = { version = "1", features = ["full", "macros", "rt-multi-thread"] }
+```
+
+```
+adder
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    └── integration_test.rs
+```
+
+```rust
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    fn internal() {
+        assert_eq!(4, 2 + 2);
+    }
+}
+```
+
+
+
+
+----
+TODO:
+
+tests web 
+
+<https://github.com/hyperium/hyper/blob/master/tests/client.rs>
+
+
+Rust : Zero to Production
+
+<https://github.com/LukeMathWalker/zero-to-production>
+
 
 
 TODO: TDD
