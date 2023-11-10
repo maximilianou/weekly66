@@ -744,10 +744,74 @@ impl Guess {
 
 Chapter 10 : Generics : https://doc.rust-lang.org/book/ch10-00-generics.html
 
+```rust
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+fn main() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}
+```
+
+Chapter 10 : Traits : https://doc.rust-lang.org/book/ch10-02-traits.html
+
+
+
+```rust
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+
+
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+```
 
 
 
 
+TODO: TDD
+TODO: upload files
+TODO: execute db index
+TODO: web
+TODO: ssh
+TODO: MQ
+TODO: Dockerfile
+TODO: Kuberentes deployment
+TODO: Functional Programming
 
 
 
