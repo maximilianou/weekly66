@@ -543,8 +543,65 @@ let v = vec![1, 2, 3];
     }
 ```
 
+```rust
+let s1 = String::from("tic");
+let s2 = String::from("tac");
+let s3 = String::from("toe");
 
+// format!() macro uses references
+let s = format!("{s1}-{s2}-{s3}");
 
+// or
+let s = s1 + "-" + &s2 + "-" + &s3;
+```
+
+```rust
+let hello = "Здравствуйте"; // String Russian
+
+for c in "Зд".chars() {
+    println!("{c}");
+}
+```
+
+```rust
+    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    let team_name = String::from("Blue");
+    let score = scores.get(&team_name).copied().unwrap_or(0);
+	
+    for (key, value) in &scores {
+        println!("{key}: {value}");
+    }	
+
+    scores.entry(String::from("Blue")).or_insert(50);
+```
+
+```rust
+
+    use std::collections::HashMap;
+
+    let text = "hello world wonderful world";
+
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("{:?}", map);
+```
+
+Chapter 9 : Error Handling  : https://doc.rust-lang.org/book/ch09-00-error-handling.html
+
+```rust
+
+```
 
 
 
