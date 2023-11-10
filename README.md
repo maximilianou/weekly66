@@ -1007,7 +1007,23 @@ mod tests {
 ----
 TODO:
 
+tdd api rust
+<https://dev.to/rogertorres/rest-api-with-rust-warp-2-post-3527>
+
+unit test rust api
+<https://codevoweb.com/how-to-write-unit-tests-for-your-rust-api/>
+
+Tutorial rest rust axum
+
+<https://codevoweb.com/create-a-simple-api-in-rust-using-the-axum-framework/>
+
+Docker rust web
+<https://codevoweb.com/dockerizing-a-rust-api-project/>
+
+
 tests web 
+
+<https://github.com/hyperium/hyper/blob/master/examples/client_json.rs>
 
 <https://github.com/hyperium/hyper/blob/master/tests/client.rs>
 
