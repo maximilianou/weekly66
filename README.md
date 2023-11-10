@@ -476,11 +476,76 @@ cd messages
 cargo run  
 ```
 
-```
+```sh
 src/main.rs
 src/lib.rs
 src/bin
 ```
+
+```sh
+src/garden.rs
+src/garden/mod.rs
+```
+
+```rust
+use
+mod
+pub mod
+```
+
+```sh
+cargo new restaurant --lib
+```
+
+```rust
+mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+
+        fn seat_at_table() {}
+    }
+
+    mod serving {
+        fn take_order() {}
+
+        fn serve_order() {}
+
+        fn take_payment() {}
+    }
+}
+```
+
+Chapter 8  : Collections : https://doc.rust-lang.org/book/ch08-00-common-collections.html
+
+```rust
+let v: Vec<i32> = Vec::new();
+let v = vec![1, 2, 3];
+
+    let v = vec![1, 2, 3, 4, 5];
+
+    let third: &i32 = &v[2];
+    println!("The third element is {third}");
+
+    let third: Option<&i32> = v.get(2);
+    match third {
+        Some(third) => println!("The third element is {third}"),
+        None => println!("There is no third element."),
+    }
+
+    let v = vec![100, 32, 57];
+    for i in &v {
+        println!("{i}");
+    }
+	
+	let mut v = vec![100, 32, 57];
+    for i in &mut v {
+        *i += 50;
+    }
+```
+
+
+
+
 
 
 
