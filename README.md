@@ -1002,10 +1002,314 @@ mod tests {
 ```
 
 
+----
+
+```rust
+use ::axum::Router;
+use ::axum::routing::get;
+
+use ::axum_test::TestServer;
+
+async fn get_ping() -> &'static str {
+    "pong!"
+}
+
+    
+#[tokio::test]
+async fn it_should_get() {
+    // Build an application with a route.
+    let app = Router::new()
+        .route("/ping", get(get_ping));
+
+    // Run the application for testing.
+    let server = TestServer::new(app).unwrap();
+
+    // Get the request.
+    let response = server
+        .get("/ping")
+        .await;
+
+    assert_eq!(response.text(), "pong!");
+}
+
+```
+
+```sh
+cargo add axum
+cargo add tokio --features macros,rt-multi-thread
+cargo add axum-test 
+```
+
+```
+[package]
+name = "simple05"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.20"
+axum-test = "13.1.1"
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+```
+
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple05]
+└─$ cargo test                                       
+   Compiling tokio-macros v2.2.0
+   Compiling num_cpus v1.16.0
+   Compiling tokio v1.34.0
+   Compiling hyper v0.14.27
+   Compiling tower v0.4.13
+   Compiling axum v0.6.20
+   Compiling axum-test v13.1.1
+   Compiling simple05 v0.1.0 (/home/kali/projects/weekly66/devrust/simple05)
+    Finished test [unoptimized + debuginfo] target(s) in 27.36s
+     Running unittests src/main.rs (target/debug/deps/simple05-3de4e7e867e66377)
+
+running 1 test
+test it_should_get ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+
+
+---
+
+```rust
+use ::axum_test::TestServer;
+
+///////////////
+
+use axum::{
+    routing::get,
+    Router,
+};
+
+
+#[tokio::main]
+async fn main() {
+    // build our application with a single route
+    let app = Router::new()
+      .route("/", get(|| async { "main Working..!" }))
+      .route("/ping", get(get_ping));
+
+    // run it with hyper on localhost:3000
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+
+// main test    
+#[tokio::test]
+async fn it_should_work() {
+    // Build an application with a route.
+    let app = Router::new()
+    .route("/", get(|| async { "main Working..!" }));
+    // Run the application for testing.
+    let server = TestServer::new(app).unwrap();
+    // Get the request.
+    let response = server
+        .get("/")
+        .await;
+    assert_eq!(response.text(), "main Working..!");
+}
+
+
+///////////////
+
+// get 
+async fn get_ping() -> &'static str {
+    "pong!"
+}
+
+// get test    
+#[tokio::test]
+async fn it_should_get() {
+    // Build an application with a route.
+    let app = Router::new()
+        .route("/ping", get(get_ping));
+
+    // Run the application for testing.
+    let server = TestServer::new(app).unwrap();
+
+    // Get the request.
+    let response = server
+        .get("/ping")
+        .await;
+
+    assert_eq!(response.text(), "pong!");
+}
+
+```
+
+```
+[package]
+name = "simple05"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.20"
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+axum-test = "13.1.1"
+
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple05]
+└─$ cargo test
+   Compiling simple05 v0.1.0 (/home/kali/projects/weekly66/devrust/simple05)
+    Finished test [unoptimized + debuginfo] target(s) in 3.91s
+     Running unittests src/main.rs (target/debug/deps/simple05-3de4e7e867e66377)
+
+running 2 tests
+test it_should_get ... ok
+test it_should_work ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+
+---
+
+
+
+```rust
+//use ::axum_test::TestServer;
+
+///////////////
+
+use axum::{
+    routing::get,
+    Router,
+};
+
+
+#[tokio::main]
+async fn main() {
+    // build our application with a single route
+    let app = Router::new()
+      .route("/", get(|| async { "main Working..!" }))
+      .route("/ping", get(get_ping));
+
+    // run it with hyper on localhost:3000
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+
+#[cfg(test)]
+mod test_main{
+  use ::axum_test::TestServer;
+  use axum::{
+    routing::get,
+    Router,
+  };
+
+  // main test    
+  #[tokio::test]
+  async fn it_should_work() {
+    // Build an application with a route.
+    let app = Router::new()
+    .route("/", get(|| async { "main Working..!" }));
+    // Run the application for testing.
+    let server = TestServer::new(app).unwrap();
+    // Get the request.
+    let response = server
+        .get("/")
+        .await;
+    assert_eq!(response.text(), "main Working..!");
+  }
+}
+
+// get 
+async fn get_ping() -> &'static str {
+    "pong!"
+}
+
+#[cfg(test)]
+mod test_ping{
+    use ::axum_test::TestServer;
+    use axum::{
+        routing::get,
+        Router,
+      };    
+    use super::{get_ping};
+  // get test 
+  #[tokio::test]
+  async fn it_should_get() {
+    // Build an application with a route.
+    let app = Router::new()
+        .route("/ping", get(get_ping));
+    // Run the application for testing.
+    let server = TestServer::new(app).unwrap();
+    // Get the request.
+    let response = server
+        .get("/ping")
+        .await;
+    assert_eq!(response.text(), "pong!");
+  }
+}
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple05]
+└─$ cargo test
+   Compiling simple05 v0.1.0 (/home/kali/projects/weekly66/devrust/simple05)
+    Finished test [unoptimized + debuginfo] target(s) in 4.50s
+     Running unittests src/main.rs (target/debug/deps/simple05-3de4e7e867e66377)
+
+running 2 tests
+test test_main::it_should_work ... ok
+test test_ping::it_should_get ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple05]
+└─$ cargo run 
+   Compiling simple05 v0.1.0 (/home/kali/projects/weekly66/devrust/simple05)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.77s
+     Running `target/debug/simple05`
+```
+
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/ 
+main Working..!                                                                                                                      
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/ping
+pong! 
+```
+
+
+---
+
+
+
+
 
 
 ----
+
 TODO:
+
+https://www.mindluster.com/lesson/148390
+
+tdd api rust
+https://github.com/drodil/op-api-rust-sdk/blob/main/tests/accounts.rs
 
 tdd api rust
 <https://dev.to/rogertorres/rest-api-with-rust-warp-2-post-3527>

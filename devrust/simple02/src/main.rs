@@ -15,12 +15,12 @@ async fn main() {
         .unwrap();
 }
 
-mod filters{
+pub mod filters{
     use warp::Filter;
     use super::handlers;
 
     pub fn list() ->  impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone{ 
-        warp::path!("holodeck")
+        warp::path!("hello")
             .and(warp::get())
             .and_then(handlers::handle_list)
     }
