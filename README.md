@@ -1302,19 +1302,36 @@ pong!
 
 
 
+
+
+
 ----
 
 TODO:
 
+
+
+- TODO: TDD
+
+e2e testing - DBAccess - Mocking - Postgres
+
+https://blog.logrocket.com/end-to-end-testing-for-rust-web-services/
+
+https://github.com/JosephLenton/axum-test/blob/b7539c3083a93af0028e9f74e74d59d6980df0dc/examples/example-todo/main.rs
+
 https://www.mindluster.com/lesson/148390
 
+
 tdd api rust
+
 https://github.com/drodil/op-api-rust-sdk/blob/main/tests/accounts.rs
 
 tdd api rust
+
 <https://dev.to/rogertorres/rest-api-with-rust-warp-2-post-3527>
 
 unit test rust api
+
 <https://codevoweb.com/how-to-write-unit-tests-for-your-rust-api/>
 
 Tutorial rest rust axum
@@ -1322,6 +1339,7 @@ Tutorial rest rust axum
 <https://codevoweb.com/create-a-simple-api-in-rust-using-the-axum-framework/>
 
 Docker rust web
+
 <https://codevoweb.com/dockerizing-a-rust-api-project/>
 
 
@@ -1336,17 +1354,14 @@ Rust : Zero to Production
 
 <https://github.com/LukeMathWalker/zero-to-production>
 
-
-
-TODO: TDD
-TODO: upload files
-TODO: execute db index
-TODO: web
-TODO: ssh
-TODO: MQ
-TODO: Dockerfile
-TODO: Kuberentes deployment
-TODO: Functional Programming
+- TODO: upload files
+- TODO: execute db index
+- TODO: web
+- TODO: ssh
+- TODO: MQ
+- TODO: Dockerfile
+- TODO: Kuberentes deployment
+- TODO: Functional Programming
 
 
 

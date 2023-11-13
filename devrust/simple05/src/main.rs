@@ -1,12 +1,7 @@
-//use ::axum_test::TestServer;
-
-///////////////
-
 use axum::{
     routing::get,
     Router,
 };
-
 
 #[tokio::main]
 async fn main() {
@@ -22,6 +17,11 @@ async fn main() {
         .unwrap();
 }
 
+
+// get 
+async fn get_ping() -> &'static str {
+    "pong!"
+}
 
 #[cfg(test)]
 mod test_main{
@@ -47,10 +47,6 @@ mod test_main{
   }
 }
 
-// get 
-async fn get_ping() -> &'static str {
-    "pong!"
-}
 
 #[cfg(test)]
 mod test_ping{
