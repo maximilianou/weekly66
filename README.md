@@ -937,6 +937,70 @@ pong!
 
 ---
 
+```sh
+cargo new cli
+cargo new srv
+```
+
+```
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple06/cli]
+└─$ cargo add axum
+
+```
+
+```rust
+use axum::response::Html;
+use axum::{
+    routing::get,
+    Router,
+};
+use std::net::SocketAddr;
+
+#[tokio::main]
+async fn main() {
+    let routes_hello = Router::new().route(
+        "/hello", 
+        get(|| async { Html("<h1>Working Rust!</h1>") } )
+    );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_hello.into_make_service())
+  .await
+  .unwrap();
+}
+
+```
+
+```
+use of undeclared crate or module `tokio`
+
+┌──(kali㉿kali)-[~/projects/weekly66/devrust/simple06/cli]
+└─$ cargo add tokio --features macros,rt-multi-thread
+```
+
+```sh
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.20"
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+```
+
+```sh
+cargo run
+
+curl http://localhost:3000/hello
+```
+
+
+
 
 
 
@@ -959,8 +1023,11 @@ https://blog.logrocket.com/end-to-end-testing-for-rust-web-services/
 
 https://github.com/JosephLenton/axum-test/blob/b7539c3083a93af0028e9f74e74d59d6980df0dc/examples/example-todo/main.rs
 
+video tutorial
 https://www.mindluster.com/lesson/148390
 
+video tutorial full stack
+https://www.reddit.com/r/rust/comments/12gx11b/jeremy_chones_rust_axum_full_course/
 
 tdd api rust
 
