@@ -1248,8 +1248,11 @@ serde = { version = "1.0.192", features = ["derive"]  }
 serde_json = "1.0.108"
 tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
 tower-http = { version = "0.4.4", features = ["fs"] }
+```
 
-
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/src/main.rs
 use axum::response::Html;
 use axum::response::IntoResponse;
 use axum::{
@@ -1308,6 +1311,290 @@ async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
 ```
 
 
+
+---
+
+
+
+```rust
+pub use self::error::{Error, Result};
+
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use axum::extract::Query;
+use axum::extract::Path;
+use std::net::SocketAddr;
+use serde::Deserialize;
+use tower_http::services::ServeDir;
+use axum::routing::get_service;
+
+mod error;
+
+
+#[tokio::main]
+async fn main() {
+  let routes_all = Router::new()
+    .merge( routes_hello() )
+    .fallback_service( routes_static() );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_all.into_make_service())
+  .await
+  .unwrap();
+}
+
+fn routes_static() -> Router {
+  Router::new().nest_service("/", get_service(ServeDir::new("./")))
+}
+
+fn routes_hello() -> Router {
+  Router::new()
+    .route( "/hello", get( handler_hello ) )
+    .route( "/hello2/:name", get( handler_hello2 ) )
+}
+
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+  name: Option<String>,
+}
+
+// /hello?name=Maximiliano
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler {params:?}","HANDLER");
+  let name = params.name.as_deref().unwrap_or("Default");
+  Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+
+// /hello/CarloAcuti
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!(" ->> {:<12} - hello_handler2 {name:?}","HANDLER");
+
+    Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+```
+
+```rust
+// cli/src/error/mod.rs
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+
+pub type Result<T> = core::result::Result<T, Error>;
+
+#[derive(Debug)]
+pub enum Error{
+    LoginFail,
+}
+
+impl IntoResponse for Error {
+    fn into_response(self) -> Response {
+        println!("--> {:<12} - {self:?}","INTO_RES");
+        (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
+    }
+}s
+```
+
+```sh
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ cargo run
+   Compiling cli v0.1.0 (/home/kali/projects/weekly66/devrust/simple06/cli)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.93s
+     Running `target/debug/cli`
+Listening: 127.0.0.1:3000
+```
+
+
+---
+
+
+```rust
+pub use self::error::{Error, Result};
+
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use axum::extract::Query;
+use axum::extract::Path;
+use std::net::SocketAddr;
+use serde::Deserialize;
+use tower_http::services::ServeDir;
+use axum::routing::get_service;
+
+mod error;
+mod web;
+
+#[tokio::main]
+async fn main() {
+  let routes_all = Router::new()
+  .merge( routes_hello() )
+  .merge( web::routes_login::routes() )
+  .fallback_service( routes_static() );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_all.into_make_service())
+  .await
+  .unwrap();
+}
+
+fn routes_static() -> Router {
+  Router::new().nest_service("/", get_service(ServeDir::new("./")))
+}
+
+fn routes_hello() -> Router {
+  Router::new()
+    .route( "/hello", get( handler_hello ) )
+    .route( "/hello2/:name", get( handler_hello2 ) )
+}
+
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+  name: Option<String>,
+}
+
+// /hello?name=Maximiliano
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler {params:?}","HANDLER");
+  let name = params.name.as_deref().unwrap_or("Default");
+  Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+
+// /hello/CarloAcuti
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!(" ->> {:<12} - hello_handler2 {name:?}","HANDLER");
+
+    Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+```
+
+```rust
+// cli/src/error/mod.rs
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+
+pub type Result<T> = core::result::Result<T, Error>;
+
+#[derive(Debug)]
+pub enum Error{
+    LoginFail,
+}
+
+impl IntoResponse for Error {
+    fn into_response(self) -> Response {
+        println!("--> {:<12} - {self:?}","INTO_RES");
+        (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
+    }
+}
+```
+
+```rust
+// cli/src/web/mod.rs
+pub mod routes_login;
+```
+
+```rust
+// cli/src/web/routes_login.rs
+use crate::{Result, Error};
+use serde::Deserialize;
+use axum::Json;
+use serde_json::Value;
+use serde_json::json;
+use axum::Router;
+use axum::routing::post;
+
+// export interface routes
+pub fn routes() -> Router {
+  Router::new().route("/api/login", post(api_login))
+}
+
+
+async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>>{
+  println!("--> {:<12} - api_login","HANDLER");
+
+  //TODO: Implement db
+
+  if payload.username != "demo" || payload.pwd != "demo" {
+    return Err(Error::LoginFail);
+  }
+
+  //TODO: Set cookies
+
+  let body = Json(json!({
+    "result":{
+        "success": true,
+    }
+  }));
+
+    Ok(body)
+}
+
+#[derive(Debug, Deserialize)]
+struct LoginPayload {
+    username: String,
+    pwd: String,
+}
+
+```
+
+
+```sh
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.20"
+serde = { version = "1.0.192", features = ["derive"]  }
+serde_json = "1.0.108"
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+tower-http = { version = "0.4.4", features = ["fs"] }
+
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl -v http://localhost:3000/api/login  -d '{ "username":"demo", "pwd":"demo" }' -H 'Content-Type: application/json'
+*   Trying [::1]:3000...
+* connect to ::1 port 3000 failed: Connection refused
+*   Trying 127.0.0.1:3000...
+* Connected to localhost (127.0.0.1) port 3000
+> POST /api/login HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.3.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 35
+> 
+< HTTP/1.1 200 OK
+< content-type: application/json
+< content-length: 27
+< date: Tue, 14 Nov 2023 14:47:03 GMT
+< 
+* Connection #0 to host localhost left intact
+{"result":{"success":true}}    
+```
+
+
+---
+
+
+
+
+
+
+---
 
 ----
 
