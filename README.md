@@ -1000,10 +1000,173 @@ curl http://localhost:3000/hello
 ```
 
 
+---
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/hello
+<h1>Working Rust!</h1>   
+```
+
+```rust
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use std::net::SocketAddr;
+
+#[tokio::main]
+async fn main() {
+    let routes_hello = Router::new().route(
+        "/hello", 
+        get( handler_hello )
+    );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_hello.into_make_service())
+  .await
+  .unwrap();
+}
+
+async fn handler_hello() -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler","HANDLER");
+  Html("<h1>Working Rust!</h1>")
+}
+```
+
+---
+
+```sh
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ cargo add serde     
+
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ cargo add serde_json
+```
+
+<https://serde.rs/derive.html>
+
+```sh
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.20"
+serde = { version = "1.0.192", features = ["derive"]  }
+serde_json = "1.0.108"
+tokio = { version = "1.34.0", features = ["macros", "rt-multi-thread"] }
+
+```
+
+```rust
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use axum::extract::Query;
+use std::net::SocketAddr;
+use serde::Deserialize;
+
+#[tokio::main]
+async fn main() {
+    let routes_hello = Router::new().route(
+        "/hello", 
+        get( handler_hello )
+    );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_hello.into_make_service())
+  .await
+  .unwrap();
+}
+
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+  name: Option<String>,
+}
+
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler {params:?}","HANDLER");
+  let name = params.name.as_deref().unwrap_or("Default");
+  Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/hello?name=Maximiliano
+<h1>Working Rust! Maximiliano!</h1> 
+```
+
+---
 
 
+```rust
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use axum::extract::Query;
+use axum::extract::Path;
+use std::net::SocketAddr;
+use serde::Deserialize;
+
+#[tokio::main]
+async fn main() {
+    let routes_hello = Router::new()
+    .route( "/hello", get( handler_hello ) )
+    .route( "/hello2/:name", get( handler_hello2 ) );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_hello.into_make_service())
+  .await
+  .unwrap();
+}
+
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+  name: Option<String>,
+}
+
+// /hello?name=Maximiliano
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler {params:?}","HANDLER");
+  let name = params.name.as_deref().unwrap_or("Default");
+  Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+
+// /hello/CarloAcuti
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!(" ->> {:<12} - hello_handler2 {name:?}","HANDLER");
+    Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+```
 
 
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost:3000/hello2/CarloAcutis
+<h1>Working Rust! CarloAcutis!</h1>   
+```
+
+
+---
 
 
 
