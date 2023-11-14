@@ -1691,6 +1691,11 @@ TODO:
 
 - TODO: TDD
 
+
+Production Rust
+
+https://www.youtube.com/watch?v=3cA_mk4vdWY
+
 e2e testing - DBAccess - Mocking - Postgres
 
 https://blog.logrocket.com/end-to-end-testing-for-rust-web-services/
