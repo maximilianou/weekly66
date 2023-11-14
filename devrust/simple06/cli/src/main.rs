@@ -8,19 +8,31 @@ use axum::extract::Query;
 use axum::extract::Path;
 use std::net::SocketAddr;
 use serde::Deserialize;
+use tower_http::services::ServeDir;
+use axum::routing::get_service;
 
 #[tokio::main]
 async fn main() {
-    let routes_hello = Router::new()
-    .route( "/hello", get( handler_hello ) )
-    .route( "/hello2/:name", get( handler_hello2 ) );
+  let routes_all = Router::new()
+    .merge( routes_hello() )
+    .fallback_service( routes_static() );
 
   let addr = SocketAddr::from( ([127,0,0,1], 3000) );
   println!("Listening: {addr}\n");
   axum::Server::bind(&addr)
-  .serve(routes_hello.into_make_service())
+  .serve(routes_all.into_make_service())
   .await
   .unwrap();
+}
+
+fn routes_static() -> Router {
+  Router::new().nest_service("/", get_service(ServeDir::new("./")))
+}
+
+fn routes_hello() -> Router {
+  Router::new()
+    .route( "/hello", get( handler_hello ) )
+    .route( "/hello2/:name", get( handler_hello2 ) )
 }
 
 #[derive(Debug, Deserialize)]
