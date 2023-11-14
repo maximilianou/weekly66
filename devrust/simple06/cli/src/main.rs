@@ -14,6 +14,7 @@ use tower_http::services::ServeDir;
 use axum::routing::get_service;
 use axum::middleware;
 use axum::response::Response;
+use tower_cookies::CookieManagerLayer;
 
 mod error;
 mod web;
@@ -24,6 +25,7 @@ async fn main() {
   .merge( routes_hello() )
   .merge( web::routes_login::routes() )
   .layer( middleware::map_response(main_response_mapper) )
+  .layer( CookieManagerLayer::new() )
   .fallback_service( routes_static() );
 
   let addr = SocketAddr::from( ([127,0,0,1], 3000) );

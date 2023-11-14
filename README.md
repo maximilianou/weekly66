@@ -1676,6 +1676,10 @@ async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
 ---
 
 
+```sh
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ cargo add tower-cookies   
+```
 
 
 
