@@ -18,7 +18,7 @@ pub fn routes() -> Router {
 
 //async fn api_login(cookies: Cookies, payload: Json<LoginPayload>) -> Result<Json<Value>>{
 async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>>{
-        println!("--> {:<12} - api_login","HANDLER");
+  println!("--> {:<12} - api_login","HANDLER");
 
   //TODO: Implement db
 
@@ -31,15 +31,15 @@ async fn api_login(payload: Json<LoginPayload>) -> Result<Json<Value>>{
 
   let body = Json(json!({
     "result":{
-        "success": true,
+      "success": true,
     }
   }));
 
-    Ok(body)
+  Ok(body)
 }
 
 #[derive(Debug, Deserialize)]
 struct LoginPayload {
-    username: String,
-    pwd: String,
+  username: String,
+  pwd: String,
 }

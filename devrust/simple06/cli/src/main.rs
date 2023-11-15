@@ -1,3 +1,4 @@
+// cli/src/main.rs
 pub use self::error::{Error, Result};
 
 use axum::response::Html;
@@ -15,15 +16,21 @@ use axum::routing::get_service;
 use axum::middleware;
 use axum::response::Response;
 use tower_cookies::CookieManagerLayer;
+use model::ModelController;
 
 mod error;
 mod web;
+mod model;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()>{
+
+  let mc = ModelController::new().await?;
+
   let routes_all = Router::new()
   .merge( routes_hello() )
   .merge( web::routes_login::routes() )
+  .nest("/api", web::routes_tickets::routes(mc.clone()))
   .layer( middleware::map_response(main_response_mapper) )
   .layer( CookieManagerLayer::new() )
   .fallback_service( routes_static() );
@@ -34,6 +41,7 @@ async fn main() {
   .serve(routes_all.into_make_service())
   .await
   .unwrap();
+  Ok(())
 }
 
 

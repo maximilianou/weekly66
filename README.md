@@ -1676,9 +1676,244 @@ async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
 ---
 
 
+```rust
+// cli/src/main.rs
+pub use self::error::{Error, Result};
+
+use axum::response::Html;
+use axum::response::IntoResponse;
+use axum::{
+    routing::get,
+    Router,
+};
+use axum::extract::Query;
+use axum::extract::Path;
+use std::net::SocketAddr;
+use serde::Deserialize;
+use tower_http::services::ServeDir;
+use axum::routing::get_service;
+use axum::middleware;
+use axum::response::Response;
+use tower_cookies::CookieManagerLayer;
+use model::ModelController;
+
+mod error;
+mod web;
+mod model;
+
+#[tokio::main]
+async fn main() -> Result<()>{
+
+  let mc = ModelController::new().await?;
+
+  let routes_all = Router::new()
+  .merge( routes_hello() )
+  .merge( web::routes_login::routes() )
+  .nest("/api", web::routes_tickets::routes(mc.clone()))
+  .layer( middleware::map_response(main_response_mapper) )
+  .layer( CookieManagerLayer::new() )
+  .fallback_service( routes_static() );
+
+  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  println!("Listening: {addr}\n");
+  axum::Server::bind(&addr)
+  .serve(routes_all.into_make_service())
+  .await
+  .unwrap();
+  Ok(())
+}
+
+
+async fn main_response_mapper( res: Response ) -> Response {
+    println!("--> {:<12} main_response_mapper","RES_MAPPER");
+    println!();
+    res
+}
+
+
+fn routes_static() -> Router {
+  Router::new().nest_service("/", get_service(ServeDir::new("./")))
+}
+
+fn routes_hello() -> Router {
+  Router::new()
+    .route( "/hello", get( handler_hello ) )
+    .route( "/hello2/:name", get( handler_hello2 ) )
+}
+
+#[derive(Debug, Deserialize)]
+struct HelloParams {
+  name: Option<String>,
+}
+
+// /hello?name=Maximiliano
+async fn handler_hello(Query(params): Query<HelloParams>) -> impl IntoResponse {
+  println!(" ->> {:<12} - hello_handler {params:?}","HANDLER");
+  let name = params.name.as_deref().unwrap_or("Default");
+  Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+
+// /hello/CarloAcuti
+async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
+    println!(" ->> {:<12} - hello_handler2 {name:?}","HANDLER");
+
+    Html(format!("<h1>Working Rust! {name}!</h1>"))
+}
+```
+
+
+```rust
+// cli/src/web/routes_ticket.rs
+use crate::model::{ModelController, Ticket, TicketForCreate};
+use crate::Result;
+use axum::extract::FromRef;
+use axum::extract::Path;
+use axum::extract::State;
+use axum::Json;
+use axum::routing::delete;
+use axum::routing::post;
+use axum::Router;
+
+
+#[derive(Clone, FromRef)]
+struct AppState {
+  mc: ModelController,
+}
+
+
+pub fn routes(mc: ModelController) -> Router {
+//  let app_state = AppState { mc };
+  Router::new()
+    .route("/tickets", post(create_ticket).get(list_tickets))
+    .route("/tickets/:id", delete(delete_ticket))
+    .with_state(mc)
+//    .with_state(app_state)
+}
+
+
+async fn create_ticket(
+  State(mc): State<ModelController>,
+  Json(ticket_fc): Json<TicketForCreate>,
+) -> Result<Json<Ticket>> {
+  println!("--> {:<12} create_ticket","HANDLER");
+  let ticket = mc.create_ticket(ticket_fc).await?;
+  Ok(Json(ticket))
+}
+
+async fn list_tickets(
+  State(mc): State<ModelController>,
+) -> Result<Json<Vec<Ticket>>>{
+  println!("--> {:<12} list_tickets","HANDLER");
+  let tickets = mc.list_tickets().await?;
+  Ok(Json(tickets))
+}
+
+async fn delete_ticket(
+  State(mc): State<ModelController>,
+  Path(id): Path<u64>,
+) -> Result<Json<Ticket>>{
+  println!("--> {:<12} delete_ticket","HANDLER");
+  let ticket = mc.delete_ticket(id).await?;
+  Ok(Json(ticket))
+}
+
+```
+
+```rust
+// cli/src/model/mod.rs
+use crate::{Error, Result};
+use serde::{Serialize, Deserialize};
+use std::sync::{Arc, Mutex};
+
+#[derive(Clone, Debug, Serialize)]
+pub struct Ticket {
+  pub id: u64,
+  pub title: String,
+}
+
+#[derive(Deserialize)]
+pub struct TicketForCreate {
+  pub title: String,
+}
+
+#[derive(Clone)]
+pub struct ModelController {
+  tickets_store: Arc<Mutex<Vec<Option<Ticket>>>>,
+}
+
+// Constructor
+impl ModelController {
+  pub async fn new() -> Result<Self> {
+    Ok(Self {
+      tickets_store: Arc::default(),
+    })
+  }
+}
+
+impl ModelController {
+
+  pub async fn create_ticket(&self, ticket_fc: TicketForCreate) -> Result<Ticket> {
+    let mut store = self.tickets_store.lock().unwrap();
+    let id = store.len() as u64;
+    let ticket = Ticket {
+      id,
+      title: ticket_fc.title,
+    };
+    store.push(Some(ticket.clone()));
+    Ok(ticket)
+  }
+
+  pub async fn list_tickets(&self) -> Result<Vec<Ticket>>{
+    let store = self.tickets_store.lock().unwrap();
+    let tickets = store.iter().filter_map(|t| t.clone()).collect();
+    Ok(tickets)
+  }
+
+  pub async fn delete_ticket(&self, id: u64) -> Result<Ticket>{
+    let mut store = self.tickets_store.lock().unwrap();
+    let ticket = store.get_mut(id as usize).and_then(|t| t.take());
+    ticket.ok_or(Error::TicketDeleteFailIdNotFound { id })
+  }
+}
+
+```
+
+
+```rust
+// cli/src/web/mod.rs
+pub mod routes_login;
+pub mod routes_tickets;
+
+```
+
+```rust
+// cli/src/error/mod.rs
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+
+pub type Result<T> = core::result::Result<T, Error>;
+
+#[derive(Debug)]
+pub enum Error{
+    LoginFail,
+    TicketDeleteFailIdNotFound { id: u64 },
+}
+
+impl IntoResponse for Error {
+    fn into_response(self) -> Response {
+        println!("--> {:<12} - {self:?}","INTO_RES");
+        (StatusCode::INTERNAL_SERVER_ERROR, "UNHANDLED_CLIENT_ERROR").into_response()
+    }
+}
+```
+
 ```sh
-┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
-└─$ cargo add tower-cookies   
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:3000/api/tickets
+{"id":0,"title":"Il metodo geniale"}                                                                                                                             
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl    http://localhost:3000/api/tickets    
+[{"id":0,"title":"Il metodo geniale"}]     
 ```
 
 
