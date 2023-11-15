@@ -1674,6 +1674,7 @@ async fn handler_hello2(Path(name): Path<String>) -> impl IntoResponse {
 
 
 ---
+---
 
 
 ```rust
@@ -1915,6 +1916,15 @@ impl IntoResponse for Error {
 └─$ curl    http://localhost:3000/api/tickets    
 [{"id":0,"title":"Il metodo geniale"}]     
 ```
+
+---
+
+
+
+
+
+
+
 
 
 
