@@ -2028,6 +2028,27 @@ devuser
 
 ```
 
+---
+
+
+```sh
+curl -sfL https://get.k3s.io | sh -
+
+└─$ mkdir ~/.kube 
+
+└─$ touch ~/.kube/config  
+
+└─$ sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
+
+└─$ export KUBECONFIG=~/.kube/config
+
+
+
+/usr/local/bin/k3s-uninstall.sh
+
+```
+
+
 
 
 ----
