@@ -35,7 +35,8 @@ async fn main() -> Result<()>{
   .layer( CookieManagerLayer::new() )
   .fallback_service( routes_static() );
 
-  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+//  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  let addr = SocketAddr::from( ([0,0,0,0], 3000) );
   println!("Listening: {addr}\n");
   axum::Server::bind(&addr)
   .serve(routes_all.into_make_service())

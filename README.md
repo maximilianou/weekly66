@@ -1921,10 +1921,112 @@ impl IntoResponse for Error {
 
 
 
+```dockerfile
+# cli/Dockerfile
+# docker build -t myorg/cli .
+# cli/Dockerfile
+# docker run -p 8888:3000 --rm --name cli myorg/cli
+FROM rust:bookworm as build
+# create a new empty shell project
+RUN USER=root cargo new --bin cli
+WORKDIR /cli
+# copy over your manifests
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
+# this build step will cache your dependencies
+RUN cargo build --release
+RUN rm src/*.rs
+# copy your source tree
+COPY ./src ./src
+# build for release
+RUN rm ./target/release/deps/cli*
+RUN cargo build --release
+# our final base
+#FROM debian:bookworm-slim
+FROM debian:bookworm-slim
+# copy the build artifact from the build stage
+COPY --from=build /cli/target/release/cli . 
+RUN chmod +x ./cli
+RUN useradd -ms /bin/bash devuser
+USER devuser
+# set the startup command to run your binary
+CMD ["./cli"]
+```
 
 
 
+```sh
 
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple07/cli]
+└─$ docker build -t myorg/cli .
+
+
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ docker images
+REPOSITORY        TAG       IMAGE ID       CREATED         SIZE
+myorg/cli         latest    c57b2a81abcd   7 seconds ago   82MB
+
+
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ docker exec -it cli bash
+root@ea0b41f99275:/# apt -y update
+root@ea0b41f99275:/# apt -y install curl 
+root@ea0b41f99275:/# curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:3000/api/tickets
+{"id":0,"title":"Il metodo geniale"}
+root@ea0b41f99275:/# curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:3000/api/tickets
+{"id":1,"title":"Il metodo geniale"}
+root@ea0b41f99275:/# curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:3000/api/tickets
+
+
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:3000/api/tickets
+curl: (56) Recv failure: Connection reset by peer
+```
+
+```rust
+//  let addr = SocketAddr::from( ([127,0,0,1], 3000) );
+  let addr = SocketAddr::from( ([0,0,0,0], 3000) );
+```
+
+
+```sh
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple07/cli]
+└─$ docker run -p 8888:3000 --rm --name cli myorg/cli
+Listening: 0.0.0.0:3000
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl   -d '{"title":"Il metodo geniale"}' -H "Content-Type: application/json" http://localhost:8888/api/tickets
+{"id":0,"title":"Il metodo geniale"}     
+```
+
+```yml
+# cli/docker-compose.yml
+# docker compose build   
+# docker compose up
+services:
+  web:
+    build: .
+    ports:
+      - "8888:3000"
+```
+
+```sh
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple07/cli]
+└─$ docker compose build   
+
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple07/cli]
+└─$ docker compose up  
+
+┌──(kali㉿kali)-[~/…/weekly66/devrust/simple06/cli]
+└─$ docker exec  cli-web-1 whoami
+devuser
+
+```
 
 
 

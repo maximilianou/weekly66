@@ -1,0 +1,8 @@
+# cli/docker-compose.yml
+# docker compose build   
+# docker compose up
+services:
+  web:
+    build: .
+    ports:
+      - "8888:3000"
