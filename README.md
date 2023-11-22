@@ -1,7 +1,7 @@
 # weekly66
 Software Development
 
----
+----
 - Rust
 ---
 
