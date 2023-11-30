@@ -2051,6 +2051,111 @@ curl -sfL https://get.k3s.io | sh -
 
 
 
+- Load balancer nginx to ip:port
+```yaml
+# cli/docker-compose.yml
+# docker compose build   
+# docker compose up
+services:
+  web:
+    build: .
+    ports:
+      - "3030:3000"
+```
+
+```dockerfile
+# cli/Dockerfile
+# docker build -t myorg/cli .
+# cli/Dockerfile
+# docker run -p 8888:3000 --rm --name cli myorg/cli
+FROM rust:bookworm as build
+# create a new empty shell project
+RUN USER=root cargo new --bin cli
+WORKDIR /cli
+# copy over your manifests
+COPY ./Cargo.lock ./Cargo.lock
+COPY ./Cargo.toml ./Cargo.toml
+# this build step will cache your dependencies
+RUN cargo build --release
+RUN rm src/*.rs
+# copy your source tree
+COPY ./src ./src
+# build for release
+RUN rm ./target/release/deps/cli*
+RUN cargo build --release
+# our final base
+#FROM debian:bookworm-slim
+FROM debian:bookworm-slim
+# copy the build artifact from the build stage
+COPY --from=build /cli/target/release/cli . 
+RUN chmod +x ./cli
+RUN useradd -ms /bin/bash devuser
+USER devuser
+# set the startup command to run your binary
+CMD ["./cli"]
+
+```
+
+
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ sudo apt -y install nginx
+
+
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ cat /etc/nginx/nginx.conf 
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+
+  server {
+    listen 80;
+    listen [::]:80;
+    location / {
+        proxy_pass http://127.0.0.1:3030;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+  }
+}
+
+```
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ sudo systemctl start nginx
+
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ systemctl status nginx         
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; disabled; preset: disabled)
+     Active: active (running) since Wed 2023-11-29 15:47:05 CET; 22min ago
+     ...
+```
+
+
+```sh
+┌──(kali㉿kali)-[~/projects/weekly66]
+└─$ curl http://localhost/hello
+<h1>Working Rust! Default!</h1>   
+```
+
+
+
+
 ----
 
 TODO:
