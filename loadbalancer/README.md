@@ -3,7 +3,7 @@
 
 ---
 
-
+- nginx.conf 
 ```sh
 
 events{
@@ -85,7 +85,7 @@ http {
 }
 
 ```
-
+-  docker-compose.yml
 ```yml
 version : “3”
 services :
@@ -99,7 +99,7 @@ services :
     network_mode: host
 
 ```
-
+-  start loadbalancer server nginx over docker-compose
 ```sh
 ┌──(kali㉿kali)-[~/projects/weekly66/loadbalancer]
 └─$ docker compose up
@@ -116,6 +116,7 @@ nginx_container_loadbalancer  | /docker-entrypoint.sh: Launching /docker-entrypo
 nginx_container_loadbalancer  | /docker-entrypoint.sh: Configuration complete; ready for start up
 ```
 
+- verify access servers
 ```sh
 ┌──(kali㉿kali)-[~/projects/weekly66]
 └─$ curl http://localhost:8080/
